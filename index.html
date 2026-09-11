@@ -622,7 +622,6 @@
         </div>
     </div>
 
-    <script>
         // === JAVASCRIPT LOGIK ===
 
         // Exakte Teilnehmerliste
@@ -640,40 +639,23 @@
         let currentSort = { column: 'points', direction: 'desc' };
 
         // Dateninitialisierung & LocalStorage Laden
-        function initData() {
-            const savedData = localStorage.getItem('vertriebs_challenge_data_v2');
-            const savedLog = localStorage.getItem('vertriebs_challenge_log_v2');
 
-            if (savedData) {
-                participants = JSON.parse(savedData);
-            } else {
-                participants = initialParticipants.map((fullName, index) => {
-                    const parts = fullName.trim().split(' ');
-                    const lastName = parts.pop();
-                    const firstName = parts.join(' ');
-                    return {
-                        id: index + 1,
-                        firstName: firstName,
-                        lastName: lastName,
-                        s1: 0, // speichert direkt die Punkte aus S1
-                        s2: 0, // speichert direkt die Punkte aus S2
-                        service: 0, // speichert direkt die Punkte aus Service
-                        points: 0
-                    };
-                });
-            }
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
-            if (savedLog) {
-                historyLog = JSON.parse(savedLog);
-            }
-            updateAll();
-        }
+const firebaseConfig = {
+    apiKey: "AIzaSyDHSke2SNoSTKQ7itvJKGWHKigcrNiCIEU",
+    authDomain: "tecisfm.firebaseapp.com",
+    databaseURL: "https://tecisfm-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "tecisfm",
+    storageBucket: "tecisfm.firebasestorage.app",
+    messagingSenderId: "532788800970",
+    appId: "1:532788800970:web:b435c6d20e93ece5683333"
+};
 
-        function saveData() {
-            localStorage.setItem('vertriebs_challenge_data_v2', JSON.stringify(participants));
-            localStorage.setItem('vertriebs_challenge_log_v2', JSON.stringify(historyLog));
-        }
-
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const challengeRef = doc(db, "vertriebsChallenge", "live");
         // Punkte anpassen (jetzt direkt als Punktwert statt Multiplikator)
         function modifyPoints(id, type, amount) {
             const p = participants.find(item => item.id === id);
